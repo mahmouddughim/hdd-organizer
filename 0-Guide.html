@@ -134,7 +134,9 @@
   <tr><td><code>setup.ps1</code></td><td>يثبّت المكتبات وينزّل نموذج الصور</td><td><code>1-Setup.bat</code></td></tr>
   <tr><td><code>wizard-organize.ps1</code></td><td>يطرح عليك أسئلة الترتيب خطوة بخطوة</td><td><code>2-Organize.bat</code></td></tr>
   <tr><td><code>classify.py</code></td><td>يصنّف الصور حسب ما فيها، ولا ينقل شيئًا</td><td><code>wizard-organize.ps1</code></td></tr>
-  <tr><td><code>organize.ps1</code></td><td>يعدّ الملفات (معاينة) أو ينقلها ويكتب سجل التراجع</td><td><code>wizard-organize.ps1</code></td></tr>
+  <tr><td><code>plan.py</code></td><td>"العقل": يقرر أي المجلدات تبقى كاملة وأين يذهب كل ملف، ثم ينقل ويكتب سجل التراجع</td><td><code>wizard-organize.ps1</code></td></tr>
+  <tr><td><code>review_page.py</code></td><td>يصنع صفحة المراجعة التي تختار فيها قرارك لكل مجلد</td><td><code>wizard-organize.ps1</code></td></tr>
+  <tr><td><code>programs.py</code></td><td>يكتب ملحق معلومات بجانب كل برنامج</td><td><code>wizard-organize.ps1</code></td></tr>
   <tr><td><code>wizard-undo.ps1</code></td><td>يطرح عليك أسئلة التراجع</td><td><code>3-Undo.bat</code></td></tr>
   <tr><td><code>undo.ps1</code></td><td>يعيد الملفات إلى أماكنها حسب سجل التراجع</td><td><code>wizard-undo.ps1</code></td></tr>
   <tr><td><code>wizard-clean.ps1</code></td><td>يبحث عن المجلدات الفارغة ويحذفها بعد موافقتك</td><td><code>4-Clean-Empty-Folders.bat</code></td></tr>
@@ -250,48 +252,92 @@
   مثلًا بسبب انقطاع الكهرباء أو إغلاق النافذة: لا مشكلة. شغّل <code>2-Organize.bat</code> مرة أخرى واختر <code>Y</code>، وسيكمل من حيث توقف دون أن يعيد الصور التي انتهت. التصنيف وحده لا ينقل أي ملف.
 </div>
 
-<h3>المعاينة: انظر قبل أن تقرّر</h3>
-<p>بعد ذلك تظهر جداول تعرض ما <em>سيحدث</em>، دون أن يُنقل أي ملف:</p>
-<pre>Type                  Files SizeGB
-----                  ----- ------
-Videos                17337 1555,3
-Images\People         52919    103
-Images\Nature          2674    8,8
-...
-Total files: 212106  (2222.3 GB)
-App/game/repo folders left untouched: 8</pre>
+<h3>التخطيط: من يبقى كاملًا ومن يُفكَّك؟</h3>
+<p>بعدها تفكّر الأداة في كل مجلد قبل أن تلمس أي ملف، مثل شخص يرتّب غرفة ويسأل نفسه: <em>"هل هذه علبة لعبة كاملة يجب أن تبقى معًا، أم أغراض مبعثرة؟"</em> القواعد بالترتيب، وأول قاعدة تنطبق هي التي تحسم:</p>
+<ol>
+  <li><strong>الخاص:</strong> مجلد أو ملف في اسمه كلمة تعني "خاص" بأي لغة (خاص، خاصة، سري، شخصي، private، privat، privé، özel، personal...) يُنقل <strong>كاملًا</strong> إلى <code>Private</code>.</li>
+  <li><strong>البرامج والألعاب:</strong> مجلد معظمه ملفات برامج (exe و dll وملفات بيانات) يُنقل <strong>كاملًا</strong> إلى <code>Programs\Apps</code>. وإذا كان البرنامج مقسومًا إلى <code>x86</code> و <code>x64</code> يُعامل كبرنامج واحد. أما مجلد فيه فيديوهات أو صور ومعها ملف تثبيت واحد فليس برنامجًا.</li>
+  <li><strong>الألبومات:</strong> مجلد باسم له معنى (مثل "رحلة تركيا") وأغلبه صور وفيديو يبقى <strong>كاملًا</strong> في <code>Albums\&lt;السنة&gt;</code>.</li>
+  <li><strong>المجلدات المختلطة:</strong> مجلد باسم له معنى فيه مستندات مع ملفات أخرى (مثل مادة دراسية: محاضرات فيديو مع PDF مع تمارين) يبقى <strong>كاملًا</strong> في <code>Folders</code>.</li>
+  <li><strong>الباقي ملفًا ملفًا:</strong> حسب النوع والسنة، مع قاعدة مهمة: <strong>الملفات المرافقة تلحق بملفها</strong>. فملف الترجمة <code>تكبيرات(360p).cc.ar.ttml</code> يذهب مع الفيديو <code>تكبيرات(360p).mp4</code> إلى المجلد نفسه، وكذلك الصورة المصغّرة للفيديو وملفات التعديل الجانبية.</li>
+</ol>
+<p>المجلدات ذات الأسماء العامة مثل <code>Downloads</code> و <code>DCIM</code> و <code>New folder</code> و <code>2021</code> و <code>برامج</code> لا تبقى كاملة أبدًا، لأنها خليط وليست وحدة لها معنى. والمجلد الكبير جدًا (أكثر من 3000 ملف) لا يُعدّ ألبومًا أو مادة، بل يُفتح ويُرتّب ما بداخله.</p>
+
+<h3>صفحة المراجعة: أنت صاحب القرار</h3>
+<p>تفتح الأداة <strong>صفحة في المتصفح</strong> فيها كل المجلدات التي ستُنقل كاملة. لا تحتاج Excel ولا إنترنت، والصفحة لا ترسل شيئًا إلى أي مكان.</p>
 <ul>
-  <li><code>Type</code>: المجلد الذي ستذهب إليه الملفات.</li>
-  <li><code>Files</code>: عدد الملفات.</li>
-  <li><code>SizeGB</code>: حجمها بالغيغابايت.</li>
-  <li><code>Year</code> (في الجدول الثاني): السنة.</li>
-  <li><code>App/game/repo folders left untouched</code>: عدد مجلدات البرامج والألعاب التي لن تُلمس (الشرح في القسم التالي).</li>
+  <li>بجانب كل مجلد قائمة تختار منها:
+    <ul>
+      <li><strong>موافق:</strong> كما هو مقترح.</li>
+      <li><strong>فكّكه:</strong> رتّب ملفاته واحدًا واحدًا.</li>
+      <li><strong>اتركه مكانه:</strong> لا تلمسه.</li>
+      <li>وللمجلدات الخاصة: <strong>انقله إلى Private ورتّب ما بداخله</strong>.</li>
+    </ul>
+  </li>
+  <li>يمكنك البحث باسم مجلد، أو عرض نوع واحد فقط.</li>
+  <li>عند الانتهاء اضغط <strong>«حفظ اختياراتي»</strong> في أسفل الصفحة. يحفظ المتصفح ملفًا صغيرًا اسمه <code>review-choices.csv</code>، عادةً في مجلد التنزيلات (Downloads).</li>
+  <li>ارجع إلى النافذة السوداء واضغط <kbd>Enter</kbd>. إذا حفظ المتصفح الملف في مكان آخر، ستطلب منك النافذة أن تسحبه إليها.</li>
+</ul>
+<p>بعدها تظهر الخطة النهائية بالأرقام، ولم يُنقل شيء بعد:</p>
+<pre>Albums (whole folders)             98
+Apps (whole folders)               8
+Companion                          305
+Images                             81644
+Left in place (your choice)        343
+Private (sorted inside)            43207
+...</pre>
+<ul>
+  <li><code>(whole folders)</code>: عدد المجلدات التي تُنقل كاملة.</li>
+  <li><code>(files inside)</code>: عدد الملفات داخل تلك المجلدات.</li>
+  <li><code>Companion</code>: الملفات المرافقة التي لحقت بملفها.</li>
+  <li><code>Left in place</code>: ما اخترت تركه مكانه.</li>
+  <li><code>Private (sorted inside)</code>: الملفات داخل مجلد خاص اخترت ترتيب ما بداخله.</li>
 </ul>
 
 <h3>السؤال الثالث: هل أبدأ النقل؟</h3>
 <p>إذا أعجبتك الأرقام، اكتب <code>YES</code> <strong>بالأحرف الكبيرة</strong> ثم اضغط <kbd>Enter</kbd>. أي شيء آخر يلغي العملية دون نقل أي ملف.</p>
 <p>أثناء النقل <strong>لا تفصل القرص ولا تطفئ الجهاز</strong>. النقل داخل القرص نفسه سريع، وفي الغالب أقل من ساعة حتى لمئات آلاف الملفات. في النهاية سترى:</p>
-<pre>Moved: 212106   Errors: 0
-Undo log: E:\Organized\_undo\move-log-20261024-075953.csv</pre>
-<p>أي: نُقل 212,106 ملفات دون أي خطأ، وهذا هو اسم سجل التراجع.</p>
+<pre>Moved: 180596 files and 199 whole folders   Errors: 0   Already gone: 0
+Undo log: E:\Organized\_undo\move-log-20261024-123308.csv</pre>
+<p>أي: نُقل كذا ملفًا وكذا مجلدًا كاملًا دون أي خطأ، وهذا هو اسم سجل التراجع.</p>
+<p>في الخطوة الأخيرة تكتب الأداة <strong>ملحقًا بجانب كل برنامج</strong> (الشرح في القسم التالي).</p>
 
 <!-- ============================================================ -->
 <h2 id="result">7. كيف ستبدو ملفاتك بعد الترتيب؟</h2>
 <p>ستجد في القرص مجلدًا جديدًا اسمه <code>Organized</code>:</p>
 <pre>E:\Organized\
-├── Videos\        2021\  2022\  2023\ ...
+├── Albums\        2021\رحلة تركيا\ ...      ← ألبومات كاملة
+├── Folders\       مادة الرياضيات\ ...        ← مواد ومشاريع كاملة
+├── Private\       صور خاصة\ ...              ← كل ما هو خاص
+├── Programs\
+│   ├── Apps\      VeraCrypt\   VeraCrypt.1 - تشفير الملفات والأقراص.html
+│   └── 2020\      vlc.exe      vlc.exe.1 - مشغل وسائط.html
+├── Videos\        2021\  2022\ ...           ← مع ترجماتها
 ├── Images\
 │   ├── People\    2021\  2022\ ...
-│   ├── Nature\    2021\  2022\ ...
-│   ├── Food\      ...
+│   ├── Nature\    ...
 │   └── ...
-├── Audio\         ...
-├── Documents\     ...
-├── Archives\      ...
-├── Programs\      ...
-├── Other\         ...
+├── Audio\  Documents\  Archives\  Other\
 ├── _labels\       photo-labels.csv
+├── _plan\         plan.csv  review-folders.csv  review.html
+├── _programs\     معلومات البرامج
 └── _undo\         move-log-....csv   undo.ps1</pre>
+
+<h3>ملحق البرنامج: ما هذا البرنامج؟ هل أحتاجه؟</h3>
+<p>بجانب كل برنامج وكل مجلد برنامج توجد صفحة صغيرة اسمها <strong>اسم البرنامج نفسه + <code>.1</code> + وصف قصير</strong>، مثل:</p>
+<pre>winrar-5-90.exe
+winrar-5-90.exe.1 - فك الضغط - قديم وفيه ثغرة.html</pre>
+<p>عندما ترتّب الملفات حسب الاسم في Explorer، يظهر الملحق <strong>تحت البرنامج مباشرة</strong>، فتعرف ما هو البرنامج من العنوان وحده. وإذا فتحته (ضغطتان، ويفتح في المتصفح) تجد:</p>
+<ul>
+  <li><strong>توصية ملوّنة:</strong> أخضر = يستحق الإبقاء، أصفر = حسب حاجتك، أحمر = غالبًا يمكن حذفه، مع السبب.</li>
+  <li><strong>ما هذا البرنامج:</strong> شرح بالعربية لما يفعله.</li>
+  <li><strong>معلومات من ملف البرنامج نفسه:</strong> اسم المنتج، والشركة، والإصدار، والتوقيع الرقمي (هل الملف أصلي أم معدّل)، والحجم، والتاريخ.</li>
+</ul>
+<div class="box warn">
+  <strong>"التوقيع لا يطابق: الملف مُعدَّل!"</strong>
+  إذا رأيت هذه العبارة في ملحق، فهذا يعني أن الملف تغيّر بعد أن أصدرته الشركة، وغالبًا لكسر الحماية. هذه الملفات قد تحتوي على برمجيات ضارة، فلا تشغّلها.
+</div>
+<p class="muted">الملحقات لا تحذف شيئًا، والقرار لك. وعندما ترتّب قرصًا جديدًا بنفسك، تحتوي الملحقات على المعلومات المأخوذة من ملف البرنامج فقط، دون الشرح العربي، إلا إذا طلبت من Claude كتابته.</p>
 
 <h3>مجلدات الملفات حسب النوع</h3>
 <div class="table-wrap">
@@ -332,8 +378,8 @@ Undo log: E:\Organized\_undo\move-log-20261024-075953.csv</pre>
 
 <h3>ما الذي لا يُنقل أبدًا؟</h3>
 <ul>
-  <li><strong>مجلدات البرامج والألعاب:</strong> أي مجلد فيه ملفات <code>.dll</code> يبقى كما هو بكامل ما فيه، لأن تفكيكه يجعل البرنامج أو اللعبة لا تعمل.</li>
-  <li><strong>مشاريع البرمجة:</strong> المجلدات التي فيها <code>.git</code>.</li>
+  <li><strong>ما اخترت تركه مكانه</strong> في صفحة المراجعة.</li>
+  <li><strong>مجلد عام فيه ملفات <code>.dll</code>:</strong> مثل مجلد اسمه <code>Program</code> فيه برنامج مثبّت، يبقى مكانه حتى لا يتعطل.</li>
   <li><strong>مجلدات النظام:</strong> سلة المحذوفات <code>$RECYCLE.BIN</code> و <code>System Volume Information</code>.</li>
   <li><strong>ملفات النظام الصغيرة:</strong> مثل <code>desktop.ini</code> و <code>Thumbs.db</code>.</li>
   <li><strong>المجلدات التي يمنع ويندوز قراءتها.</strong></li>
@@ -341,13 +387,13 @@ Undo log: E:\Organized\_undo\move-log-20261024-075953.csv</pre>
 </ul>
 
 <div class="box warn">
-  <strong>شيء مهم يجب أن تعرفه</strong>
-  الترتيب الجديد يجمع الملفات حسب <em>النوع والسنة</em>. لذلك إذا كان لديك مجلد اسمه مثلًا <em>"رحلة تركيا"</em>، فلن يبقى مجموعًا معًا: صوره ستذهب إلى <code>Images\...</code> وفيديوهاته إلى <code>Videos\...</code>. إذا كان هذا يزعجك فاستعمل التراجع. أو رتّب فقط المجلدات المبعثرة (مثل <code>Downloads</code>) بدل القرص كله.
+  <strong>الأداة ذكية لكنها ليست كاملة</strong>
+  هي تحكم من أسماء المجلدات وأنواع الملفات وأحجامها فقط، ولا تفهم المعنى كما تفهمه أنت. لذلك راجع صفحة المراجعة جيدًا، وإذا رأيت بعد النقل شيئًا في غير مكانه فانقله بيدك أو استعمل التراجع.
 </div>
 
 <!-- ============================================================ -->
 <h2 id="undo">8. الخطوة 3: التراجع ← <code>3-Undo.bat</code></h2>
-<p>إذا لم يعجبك الترتيب، يعيد التراجع <strong>كل ملف إلى مكانه القديم بالضبط</strong>، ويعيد إنشاء المجلدات القديمة إذا كانت قد حُذفت.</p>
+<p>إذا لم يعجبك الترتيب، يعيد التراجع <strong>كل ملف وكل مجلد كامل إلى مكانه القديم بالضبط</strong>، ويعيد إنشاء المجلدات القديمة إذا كانت قد حُذفت. ملحقات البرامج تبقى في <code>Organized</code> لأنها ملفات جديدة، ويمكنك حذفها بأمان.</p>
 <div class="step"><div class="num">1</div><div>اضغط مرتين على <code>3-Undo.bat</code>.</div></div>
 <div class="step"><div class="num">2</div><div>اكتب حرف القرص الذي رتّبته، مثل <code>E</code>، ثم اضغط <kbd>Enter</kbd>.</div></div>
 <div class="step"><div class="num">3</div><div>ستظهر قائمة بسجلات الترتيب مرقّمة، والأحدث أولًا. اضغط <kbd>Enter</kbd> لاختيار الأحدث، أو اكتب رقم سجل آخر.</div></div>
@@ -399,6 +445,9 @@ Undo log: E:\Organized\_undo\move-log-20261024-075953.csv</pre>
   <tr><td>التصنيف بطيء جدًا</td><td>إذا ظهر <code>CPU</code> في نهاية التجهيز فلا يوجد كرت NVIDIA، والبطء طبيعي. والأقراص الخارجية القديمة (USB 2) بطيئة أيضًا. اتركه يعمل، فهو يكمل وحده.</td></tr>
   <tr><td>بعض الصور في المجلد الخطأ</td><td>النموذج ذكي لكنه ليس مثاليًا. انقل هذه الصور بيدك إلى المجلد الصحيح. التراجع يتخطى الملفات التي نقلتها بنفسك بأمان.</td></tr>
   <tr><td>رقم <code>Errors</code> ليس صفرًا</td><td>بعض الملفات لم تُنقل، غالبًا لأنها كانت مفتوحة أو محمية، وبقيت في مكانها القديم سليمة. التفاصيل في ملف <code>errors-....txt</code> داخل <code>Organized\_undo\</code>.</td></tr>
+  <tr><td>ضغطت «حفظ اختياراتي» لكن الأداة لم تجد الملف</td><td>بعض المتصفحات تسألك أين تحفظ. ابحث عن <code>review-choices.csv</code> حيث حفظته، واسحبه إلى النافذة السوداء عندما تطلبه.</td></tr>
+  <tr><td>ملف CSV يُفتح في برنامج غير Excel (مثل Visual Studio Code)</td><td>هذا إعداد ويندوز لنوع الملف. لا تحتاج Excel أصلًا، فصفحة المراجعة في المتصفح تكفي.</td></tr>
+  <tr><td>غيّرت اسم مجلد خاص فلم يعد يُعامل كخاص</td><td>الأداة تعرف الخاص من الاسم. في صفحة المراجعة لن يظهر كخاص، فأخبر Claude أو أضف كلمة "خاص" إلى اسمه.</td></tr>
   <tr><td>رسالة رفض: <em>فيه ويندوز أو مجلد المستخدم</em></td><td>هذه حماية مقصودة. اختر قرص بيانات أو مجلدًا محددًا.</td></tr>
   <tr><td>أريد ترتيب ملفات جديدة على قرص رتّبته سابقًا</td><td>شغّل <code>2-Organize.bat</code> مرة أخرى. الملفات داخل <code>Organized</code> لن تُلمس، والجديدة فقط تُرتّب معها. وسيُنشأ سجل تراجع جديد لهذه المرة.</td></tr>
 </table>
@@ -421,23 +470,32 @@ Undo log: E:\Organized\_undo\move-log-20261024-075953.csv</pre>
 <pre>.\.venv\Scripts\python.exe tools\classify.py --root F:\</pre>
 <p>تجربة على أول 300 صورة فقط:</p>
 <pre>.\.venv\Scripts\python.exe tools\classify.py --root F:\ --limit 300</pre>
-<p>3) معاينة (أرقام فقط):</p>
-<pre>powershell -ExecutionPolicy Bypass -File tools\organize.ps1 -Drive F:\ -Mode Preview -Labels "F:\Organized\_labels\photo-labels.csv"</pre>
-<p>4) النقل الفعلي:</p>
-<pre>powershell -ExecutionPolicy Bypass -File tools\organize.ps1 -Drive F:\ -Mode Move -Labels "F:\Organized\_labels\photo-labels.csv"</pre>
-<p>5) التراجع (ضع اسم السجل الصحيح):</p>
+<p>3) الخطة (أرقام فقط، لا ينقل شيئًا). تستعمل تصنيف الصور تلقائيًا إن وُجد:</p>
+<pre>.\.venv\Scripts\python.exe tools\plan.py --root F:\</pre>
+<p>4) صفحة المراجعة، ثم تحديث الخطة باختياراتك:</p>
+<pre>.\.venv\Scripts\python.exe tools\review_page.py --root F:\</pre>
+<pre>.\.venv\Scripts\python.exe tools\plan.py --root F:\ --review --choices "C:\Users\mahmo\Downloads\review-choices.csv"</pre>
+<p>5) قائمة البرامج (قبل النقل)، ثم النقل الفعلي، ثم الملحقات:</p>
+<pre>.\.venv\Scripts\python.exe tools\programs.py --root F:\ --inventory F:\Organized\_programs\inventory.csv</pre>
+<pre>.\.venv\Scripts\python.exe tools\plan.py --root F:\ --execute</pre>
+<pre>.\.venv\Scripts\python.exe tools\programs.py --root F:\ --write F:\Organized\_programs\descriptions.json --inv F:\Organized\_programs\inventory.csv</pre>
+<p>6) التراجع (ضع اسم السجل الصحيح):</p>
 <pre>powershell -ExecutionPolicy Bypass -File tools\undo.ps1 -Log "F:\Organized\_undo\move-log-YYYYMMDD-HHMMSS.csv"</pre>
-<p class="muted">للترتيب حسب النوع والسنة فقط دون تصنيف الصور: تخطَّ الأمر رقم 2، واحذف الجزء <code>-Labels "..."</code> من الأمرين 3 و4.</p>
+<p class="muted">للترتيب دون تصنيف الصور حسب محتواها: تخطَّ الأمر رقم 2. وفي ملف <code>review-folders.csv</code> يمكنك كتابة قرارك يدويًا في عمود <code>Action</code>: <code>whole</code> أو <code>split</code> أو <code>skip</code> أو <code>inside</code>.</p>
 
 <!-- ============================================================ -->
 <h2 id="e-drive">14. ما تمّ على قرصك E: (Seagate، 5 تيرا)</h2>
 <div class="box ok">
-  <strong>رُتّب بنجاح بتاريخ 24 أكتوبر 2026</strong>
+  <strong>رُتّب بنجاح بتاريخ 24 أكتوبر 2026 (الترتيب الثاني، الذكي)</strong>
   <ul>
-    <li><strong>نُقل:</strong> 212,106 ملفات (2.2 تيرابايت)، دون أي خطأ ودون حذف أي ملف.</li>
-    <li><strong>صُنّفت:</strong> حوالي 114,000 صورة على كرت الشاشة GTX 1660 SUPER في حوالي ساعة.</li>
-    <li><strong>بقي مكانه:</strong> 8 مجلدات برامج وألعاب، و3 مجلدات منع ويندوز قراءتها.</li>
-    <li><strong>سجل التراجع:</strong> <code>E:\Organized\_undo\move-log-20261024-075953.csv</code></li>
+    <li><strong>نُقل:</strong> 180,596 ملفًا و199 مجلدًا كاملًا، دون أي خطأ ودون حذف أي ملف.</li>
+    <li><strong>ما بقي كاملًا:</strong> 98 ألبومًا، و56 مجلدًا مختلطًا (مواد ومشاريع)، و8 برامج وألعاب، و37 مجلدًا خاصًا.</li>
+    <li><strong>المجلد الخاص الكبير</strong> (43,207 ملفات) نُقل إلى <code>Private</code> ورُتّب ما بداخله.</li>
+    <li><strong>ملفات مرافقة:</strong> 305 ترجمات ومصغّرات لحقت بفيديوهاتها.</li>
+    <li><strong>ملحقات البرامج:</strong> 88 ملحقًا: 6 تستحق الإبقاء، و22 حسب حاجتك، و60 غالبًا يمكن حذفها.</li>
+    <li><strong>بقي مكانه باختيارك:</strong> 7 مجلدات (343 ملفًا).</li>
+    <li><strong>سجل التراجع:</strong> <code>E:\Organized\_undo\move-log-20261024-123308.csv</code></li>
+    <li><strong>الترتيب الأول</strong> (حسب النوع والسنة فقط) تُرُوجِع عنه قبل ذلك، وسجله القديم <code>move-log-20261024-075953.csv</code> لم يعد له استعمال.</li>
     <li><strong>المجلدات القديمة الفارغة:</strong> ما زالت موجودة. يمكنك حذفها بـ <code>4-Clean-Empty-Folders.bat</code> إذا أردت.</li>
   </ul>
 </div>

@@ -1,5 +1,5 @@
-﻿# Reverse a move made by organize.ps1, using its move-log CSV. Safe to re-run:
-# files already back in place are skipped, and nothing is overwritten.
+﻿# Reverse a move made by organize.ps1 or plan.py, using its move-log CSV. Handles files and
+# whole folders. Safe to re-run: items already back in place are skipped, nothing is overwritten.
 #
 #   .\undo.ps1 -Log "E:\Organized\_undo\move-log-YYYYMMDD-HHMMSS.csv"
 param([Parameter(Mandatory)] [string] $Log)
@@ -12,10 +12,13 @@ $errPath = [System.IO.Path]::ChangeExtension($Log, '.undo-errors.txt')
 $err = New-Object System.IO.StreamWriter($errPath, $false, [System.Text.Encoding]::UTF8)
 
 foreach ($e in $entries) {
-    if (-not [System.IO.File]::Exists($e.Destination) -or [System.IO.File]::Exists($e.Source)) { $skipped++; continue }
+    $isDir = [System.IO.Directory]::Exists($e.Destination)
+    $sourceTaken = [System.IO.File]::Exists($e.Source) -or [System.IO.Directory]::Exists($e.Source)
+    if (-not ($isDir -or [System.IO.File]::Exists($e.Destination)) -or $sourceTaken) { $skipped++; continue }
     try {
         [System.IO.Directory]::CreateDirectory([System.IO.Path]::GetDirectoryName($e.Source)) | Out-Null
-        [System.IO.File]::Move($e.Destination, $e.Source)
+        if ($isDir) { [System.IO.Directory]::Move($e.Destination, $e.Source) }
+        else { [System.IO.File]::Move($e.Destination, $e.Source) }
         $restored++
     } catch {
         $errors++

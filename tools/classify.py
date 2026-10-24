@@ -2,7 +2,7 @@
 
 Images are decoded in memory, scored by a local CLIP model, and forgotten. Results go
 only to a CSV on the drive itself; the console prints aggregate counts, never file names.
-Moves nothing; organize.ps1 -Labels <csv> uses the CSV to build Images\\<Label>\\<Year>.
+Moves nothing; plan.py reads the CSV to build Images\\<Label>\\<Year>.
 
     python classify.py --download             # one-time model download (needs internet)
     python classify.py --root E:\\ --limit 300  # quick trial on the first 300 photos
