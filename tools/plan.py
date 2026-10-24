@@ -39,6 +39,7 @@ EXT_CAT = {"." + e: c for c, exts in CATEGORIES.items() for e in exts.split()}
 COMPANION_EXTS = {".srt", ".vtt", ".ttml", ".ass", ".ssa", ".sub", ".idx", ".sbv", ".smi", ".sup", ".lrc", ".cue",
                   ".xmp", ".aae", ".nfo", ".description", ".json", ".thm"}
 MAIN_CATS = {"Images", "Videos", "Audio", "Documents"}
+FLAT_CATS = {"Videos"}   # all in one folder, no year subfolders
 DOC_LIKE = {"Documents", "Other", "Archives", "Programs"}
 
 LETTER = r"[^\W\d_]"   # any letter, Arabic included
@@ -208,7 +209,7 @@ def plan_files(path, d, labels):
         folder = cat
         if cat == "Images" and src in labels:
             folder = os.path.join("Images", labels[src])
-        dest = os.path.join(folder, year_of(mtime))
+        dest = folder if cat in FLAT_CATS else os.path.join(folder, year_of(mtime))
         if cat in MAIN_CATS:
             mains.append((os.path.splitext(name)[0], cat, dest))
         out.append([src, dest, "Files"])
@@ -309,6 +310,7 @@ def execute(root, plan_path, undo_dir):
     err_path = os.path.join(undo_dir, f"errors-{stamp}.txt")
     dest_root = os.path.join(root, "Organized")
     moved, errors, missing = Counter(), 0, 0
+    renamed = {}   # folder -> [(old stem, new stem)] for files that got a " (n)" suffix
     with open(plan_path, encoding="utf-8-sig", newline="") as f:
         rows = list(csv.DictReader(f))
     with open(log_path, "w", encoding="utf-8", newline="") as log, open(err_path, "w", encoding="utf-8") as err:
@@ -323,7 +325,16 @@ def execute(root, plan_path, undo_dir):
                 if row["Kind"] == "dir":
                     target = unique(os.path.join(dest_root, row["Destination"]))
                 else:
-                    target = unique(os.path.join(dest_root, row["Destination"], os.path.basename(src)))
+                    folder, name = os.path.join(dest_root, row["Destination"]), os.path.basename(src)
+                    if row["Rule"] == "Companion":   # a renamed "video (1).mp4" keeps "video (1).srt"
+                        for old, new in renamed.get(os.path.normcase(folder), ()):
+                            if name.startswith(old + ".") or name.startswith(old + "_"):
+                                name = new + name[len(old):]
+                                break
+                    target = unique(os.path.join(folder, name))
+                    if target != os.path.join(folder, name) and row["Rule"] != "Companion":
+                        renamed.setdefault(os.path.normcase(folder), []).append(
+                            (os.path.splitext(name)[0], os.path.splitext(os.path.basename(target))[0]))
                 os.makedirs(os.path.dirname(target), exist_ok=True)
                 os.rename(src, target)
                 writer.writerow([src, target])
