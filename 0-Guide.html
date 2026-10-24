@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دليل ترتيب الهارد</title>
+<style>
+  :root {
+    --bg: #faf8f4; --card: #ffffff; --ink: #1f2328; --muted: #5b6370; --line: #e4e0d8;
+    --accent: #1f6feb; --accent-soft: #e8f0fe; --ok: #1a7f37; --ok-soft: #e6f4ea;
+    --warn: #9a6700; --warn-soft: #fff4d6; --bad: #c62828; --bad-soft: #fdecea;
+    --code-bg: #f1efe9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15171a; --card: #1d2024; --ink: #e8e6e3; --muted: #a2a8b1; --line: #33373d;
+      --accent: #6ea8fe; --accent-soft: #1c2a40; --ok: #5cc27a; --ok-soft: #17301f;
+      --warn: #e3b341; --warn-soft: #34290f; --bad: #ff7b72; --bad-soft: #3a1c1b;
+      --code-bg: #262a2f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15171a; --card: #1d2024; --ink: #e8e6e3; --muted: #a2a8b1; --line: #33373d;
+    --accent: #6ea8fe; --accent-soft: #1c2a40; --ok: #5cc27a; --ok-soft: #17301f;
+    --warn: #e3b341; --warn-soft: #34290f; --bad: #ff7b72; --bad-soft: #3a1c1b;
+    --code-bg: #262a2f;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Segoe UI", Tahoma, "Noto Naskh Arabic", Arial, sans-serif;
+    font-size: 17px; line-height: 1.85;
+  }
+  main { max-width: 860px; margin: 0 auto; padding: 32px 16px 80px; }
+  h1 { font-size: 2rem; line-height: 1.3; margin: 0 0 8px; }
+  h2 { font-size: 1.45rem; margin: 56px 0 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+  h3 { font-size: 1.15rem; margin: 28px 0 8px; }
+  p { margin: 10px 0; }
+  .lead { color: var(--muted); font-size: 1.08rem; }
+  a { color: var(--accent); }
+  code, kbd, pre { font-family: Consolas, "Cascadia Mono", monospace; direction: ltr; unicode-bidi: isolate; }
+  code { background: var(--code-bg); padding: 1px 6px; border-radius: 5px; font-size: .92em; }
+  kbd { background: var(--card); border: 1px solid var(--line); border-bottom-width: 3px; padding: 0 7px; border-radius: 6px; font-size: .9em; }
+  pre { background: var(--code-bg); padding: 14px 16px; border-radius: 10px; overflow-x: auto; text-align: left; font-size: .9rem; line-height: 1.6; margin: 12px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: .97rem; background: var(--card); border-radius: 10px; overflow: hidden; }
+  th, td { padding: 9px 12px; border-bottom: 1px solid var(--line); text-align: right; vertical-align: top; }
+  th { background: var(--accent-soft); font-weight: 600; }
+  tr:last-child td { border-bottom: 0; }
+  .table-wrap { overflow-x: auto; }
+  .box { border-radius: 12px; padding: 14px 18px; margin: 16px 0; border: 1px solid var(--line); background: var(--card); }
+  .box.ok { background: var(--ok-soft); border-color: transparent; }
+  .box.warn { background: var(--warn-soft); border-color: transparent; }
+  .box.bad { background: var(--bad-soft); border-color: transparent; }
+  .box.info { background: var(--accent-soft); border-color: transparent; }
+  .box strong:first-child { display: block; margin-bottom: 4px; }
+  .toc { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 20px; margin: 24px 0; }
+  .toc ol { margin: 6px 0; padding-inline-start: 22px; }
+  .step { display: flex; gap: 14px; align-items: flex-start; margin: 18px 0; }
+  .num { flex: 0 0 34px; height: 34px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 700; margin-top: 2px; }
+  .step > div { flex: 1; min-width: 0; }
+  .files { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin: 16px 0; }
+  .file { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; }
+  .file .name { font-family: Consolas, monospace; direction: ltr; font-weight: 700; color: var(--accent); display: block; text-align: right; }
+  .file p { margin: 4px 0 0; font-size: .95rem; color: var(--muted); }
+  .muted { color: var(--muted); }
+  ul, ol { padding-inline-start: 24px; }
+  li { margin: 4px 0; }
+  .theme-toggle { position: fixed; top: 12px; left: 12px; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; cursor: pointer; font: inherit; font-size: .85rem; }
+  @media print {
+    .theme-toggle, .toc { display: none; }
+    body { background: #fff; color: #000; font-size: 12pt; }
+    h2 { break-before: auto; }
+    .box, pre, table { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" type="button" onclick="toggleTheme()">فاتح / داكن</button>
+<main>
+
+<h1>دليل ترتيب الهارد ديسك</h1>
+<p class="lead">ترتّب هذه الأدوات ملفات أي قرص أو مجلد حسب نوع الملف ثم سنة الملف، وتصنّف الصور حسب ما فيها (أشخاص، طبيعة، طعام...). كل هذا يحدث على جهازك فقط، دون إرسال أي صورة إلى أي مكان، ودون حذف أي ملف. ويمكنك التراجع متى شئت.</p>
+
+<nav class="toc">
+  <strong>محتويات الدليل</strong>
+  <ol>
+    <li><a href="#story">الفكرة ببساطة</a></li>
+    <li><a href="#box">ماذا يوجد في المجلد؟ (كل الأدوات)</a></li>
+    <li><a href="#privacy">هل ملفاتي آمنة؟</a></li>
+    <li><a href="#need">ماذا تحتاج قبل أن تبدأ؟</a></li>
+    <li><a href="#setup">الخطوة 1: تجهيز الجهاز ← <code>1-Setup.bat</code></a></li>
+    <li><a href="#organize">الخطوة 2: الترتيب ← <code>2-Organize.bat</code></a></li>
+    <li><a href="#result">كيف ستبدو ملفاتك بعد الترتيب؟</a></li>
+    <li><a href="#undo">الخطوة 3: التراجع ← <code>3-Undo.bat</code></a></li>
+    <li><a href="#clean">الخطوة 4 (اختيارية): حذف المجلدات الفارغة ← <code>4-Clean-Empty-Folders.bat</code></a></li>
+    <li><a href="#rules">القواعد الذهبية</a></li>
+    <li><a href="#faq">مشاكل وحلول</a></li>
+    <li><a href="#other-pc">استعمال الأدوات على جهاز آخر</a></li>
+    <li><a href="#manual">الطريقة اليدوية بالأوامر (للمتقدمين)</a></li>
+    <li><a href="#e-drive">ما تمّ على قرصك E:</a></li>
+    <li><a href="#words">قاموس الكلمات</a></li>
+  </ol>
+</nav>
+
+<!-- ============================================================ -->
+<h2 id="story">1. الفكرة ببساطة</h2>
+<p>تخيّل أن عندك غرفة كبيرة مليئة بالألعاب المبعثرة في كل مكان: سيارات تحت السرير، ودمى في الخزانة، وكتب على الأرض. أنت تريد ترتيبها في صناديق.</p>
+<p>هذه الأدوات تعمل مثل مساعد يرتّب الغرفة <strong>وعيناه مغمضتان</strong>:</p>
+<ul>
+  <li>يمسك كل لعبة ويتحسّس شكلها من الخارج فقط، مثلًا: <em>"هذه سيارة"</em> أو <em>"هذا كتاب"</em>. هذا ما نسمّيه <strong>نوع الملف</strong>.</li>
+  <li>ينظر إلى الملصق المكتوب عليها: <em>"اشتُريت سنة 2021"</em>. هذا هو <strong>تاريخ الملف</strong>.</li>
+  <li>يضعها في الصندوق الصحيح: صندوق السيارات، ثم داخله علبة سنة 2021.</li>
+  <li>ويكتب في دفتر صغير: <em>"أخذت السيارة الحمراء من تحت السرير ووضعتها في صندوق السيارات"</em>. هذا الدفتر هو <strong>سجل التراجع</strong>. لو لم يعجبك الترتيب، يقرأ الدفتر من آخره إلى أوله ويعيد كل لعبة إلى مكانها القديم بالضبط.</li>
+</ul>
+<p>وبالنسبة إلى <strong>الصور</strong> يوجد مساعد ذكي إضافي اسمه <strong>نموذج CLIP</strong>، يعيش داخل جهازك. ينظر إلى كل صورة ويقول: <em>"هذه فيها أشخاص"</em> أو <em>"هذه طبيعة"</em>، ثم ينساها فورًا. لا يحكي لأحد عنها، ولا يرسلها إلى أي مكان.</p>
+
+<!-- ============================================================ -->
+<h2 id="box">2. ماذا يوجد في المجلد؟ (كل الأدوات)</h2>
+<p>كل الأدوات في مجلد واحد اسمه <code>hdd-organizer</code>. الملفات المرقّمة هي التي تستعملها أنت، وتشغّلها <strong>بالضغط عليها مرتين</strong>. أما مجلد <code>tools</code> فهو "غرفة المحرّك" ولا تحتاج أن تفتحه.</p>
+
+<div class="files">
+  <div class="file"><span class="name">0-Guide.html</span><p>هذا الدليل الذي تقرؤه الآن.</p></div>
+  <div class="file"><span class="name">1-Setup.bat</span><p>يجهّز الجهاز. تشغّله <strong>مرة واحدة فقط</strong> على كل جهاز، ويحتاج إنترنت.</p></div>
+  <div class="file"><span class="name">2-Organize.bat</span><p>يرتّب قرصًا أو مجلدًا. يسألك أسئلة بسيطة، ويعرض عليك النتيجة قبل أن ينقل أي شيء.</p></div>
+  <div class="file"><span class="name">3-Undo.bat</span><p>زر التراجع. يعيد كل الملفات إلى أماكنها القديمة.</p></div>
+  <div class="file"><span class="name">4-Clean-Empty-Folders.bat</span><p>اختياري. يحذف المجلدات التي أصبحت فارغة تمامًا بعد الترتيب.</p></div>
+  <div class="file"><span class="name">tools\</span><p>غرفة المحرّك، فيها السكربتات التي تقوم بالعمل الحقيقي.</p></div>
+</div>
+
+<h3>ماذا يوجد داخل <code>tools</code>؟</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>الملف</th><th>ماذا يفعل</th><th>من يشغّله</th></tr>
+  <tr><td><code>setup.ps1</code></td><td>يثبّت المكتبات وينزّل نموذج الصور</td><td><code>1-Setup.bat</code></td></tr>
+  <tr><td><code>wizard-organize.ps1</code></td><td>يطرح عليك أسئلة الترتيب خطوة بخطوة</td><td><code>2-Organize.bat</code></td></tr>
+  <tr><td><code>classify.py</code></td><td>يصنّف الصور حسب ما فيها، ولا ينقل شيئًا</td><td><code>wizard-organize.ps1</code></td></tr>
+  <tr><td><code>organize.ps1</code></td><td>يعدّ الملفات (معاينة) أو ينقلها ويكتب سجل التراجع</td><td><code>wizard-organize.ps1</code></td></tr>
+  <tr><td><code>wizard-undo.ps1</code></td><td>يطرح عليك أسئلة التراجع</td><td><code>3-Undo.bat</code></td></tr>
+  <tr><td><code>undo.ps1</code></td><td>يعيد الملفات إلى أماكنها حسب سجل التراجع</td><td><code>wizard-undo.ps1</code></td></tr>
+  <tr><td><code>wizard-clean.ps1</code></td><td>يبحث عن المجلدات الفارغة ويحذفها بعد موافقتك</td><td><code>4-Clean-Empty-Folders.bat</code></td></tr>
+  <tr><td><code>requirements.txt</code></td><td>قائمة المكتبات التي يثبّتها التجهيز</td><td><code>setup.ps1</code></td></tr>
+</table>
+</div>
+
+<div class="box info">
+  <strong>مجلد مخفي اسمه <code>.venv</code></strong>
+  ينشئه <code>1-Setup.bat</code> داخل <code>hdd-organizer</code>. فيه Python والمكتبات التي تحتاجها الأدوات. هو مخفي حتى لا يزعجك. لا تحذفه ولا تنقله.
+</div>
+
+<!-- ============================================================ -->
+<h2 id="privacy">3. هل ملفاتي آمنة؟</h2>
+<div class="box ok">
+  <strong>نعم. هذه هي الوعود الخمسة:</strong>
+  <ol>
+    <li><strong>لا حذف أبدًا:</strong> الأدوات <em>تنقل</em> الملفات فقط ولا تحذف أي ملف. الشيء الوحيد الذي يُحذف هو المجلدات الفارغة تمامًا، وذلك فقط عندما تشغّل الأداة رقم 4 وتكتب <code>YES</code> بنفسك.</li>
+    <li><strong>لا كتابة فوق ملف آخر:</strong> إذا وُجد ملفان بالاسم نفسه، يُضاف رقم إلى اسم الثاني، مثلًا <code>photo (1).jpg</code>.</li>
+    <li><strong>لا شيء يخرج من جهازك:</strong> تصنيف الصور يعمل دون إنترنت. السكربت يمنع نفسه من الاتصال بالإنترنت أثناء التصنيف. ولتتأكد بنفسك افصل الإنترنت قبل التشغيل، وسترى أنه يعمل.</li>
+    <li><strong>معاينة قبل أي نقل:</strong> ترى الأرقام أولًا، ولا يبدأ النقل إلا عندما تكتب <code>YES</code>.</li>
+    <li><strong>تراجع كامل:</strong> كل عملية نقل تُسجَّل فورًا في سجل التراجع. حتى لو انقطعت الكهرباء في المنتصف، يبقى السجل صحيحًا.</li>
+  </ol>
+</div>
+
+<h3>ماذا تقرأ الأدوات من ملفاتك بالضبط؟</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>الملف</th><th>ما يُقرأ</th><th>ما لا يُقرأ</th></tr>
+  <tr><td>كل الملفات</td><td>الاسم، الامتداد (<code>.jpg</code>، <code>.mp4</code>...)، الحجم، تاريخ آخر تعديل</td><td>المحتوى، فلا يُفتح أي فيديو أو مستند أو أغنية</td></tr>
+  <tr><td>الصور فقط (عند اختيار <code>Y</code>)</td><td>تُفتح الصورة <strong>في ذاكرة جهازك</strong> ليصنّفها النموذج، ثم تُنسى. وتُقرأ أيضًا المعلومات التقنية داخلها (EXIF)، مثل اسم برنامج التعديل</td><td>لا تُحفظ نسخة منها، ولا تُرسل إلى أي مكان</td></tr>
+</table>
+</div>
+
+<div class="box warn">
+  <strong>ملفان فيهما أسماء ملفاتك: احتفظ بهما لنفسك</strong>
+  الأدوات تكتب ملفين على القرص نفسه الذي رتّبته:
+  <ul>
+    <li><code>Organized\_labels\photo-labels.csv</code>: قائمة الصور وتصنيف كل صورة.</li>
+    <li><code>Organized\_undo\move-log-....csv</code>: سجل التراجع، يحتوي على المكان القديم والجديد لكل ملف.</li>
+  </ul>
+  لا ترسل هذين الملفين لأحد، فهما يكشفان أسماء ملفاتك. ولا تحذف سجل التراجع، لأنه الطريقة الوحيدة للتراجع.
+</div>
+
+<!-- ============================================================ -->
+<h2 id="need">4. ماذا تحتاج قبل أن تبدأ؟</h2>
+<div class="table-wrap">
+<table>
+  <tr><th>الشيء</th><th>هل هو ضروري؟</th><th>ملاحظات</th></tr>
+  <tr><td>جهاز ويندوز 10 أو 11</td><td>نعم</td><td>الأدوات مكتوبة لويندوز.</td></tr>
+  <tr><td>برنامج <strong>Python</strong></td><td>نعم</td><td>مجاني. طريقة تثبيته في الخطوة 1. موجود مسبقًا على جهازك المكتبي.</td></tr>
+  <tr><td>إنترنت</td><td>مرة واحدة فقط</td><td>للتجهيز (الخطوة 1)، لتنزيل حوالي 3.5GB. بعدها كل شيء يعمل دون إنترنت.</td></tr>
+  <tr><td>مساحة فارغة على القرص C:</td><td>نعم</td><td>حوالي 5GB للمكتبات والنموذج.</td></tr>
+  <tr><td>كرت شاشة NVIDIA</td><td>لا، لكنه يسرّع</td><td>مع كرت NVIDIA: حوالي 25 صورة في الثانية. دونه يعمل على المعالج ببطء أكبر، وقد يكون أبطأ بخمس إلى عشر مرات.</td></tr>
+  <tr><td>مساحة فارغة على القرص الذي ترتّبه</td><td>لا</td><td>النقل داخل القرص نفسه لا يحتاج مساحة إضافية.</td></tr>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="setup">5. الخطوة 1: تجهيز الجهاز ← <code>1-Setup.bat</code></h2>
+<div class="box info">
+  <strong>مرة واحدة فقط لكل جهاز</strong>
+  جهازك المكتبي مجهّز مسبقًا، فيمكنك تخطّي هذه الخطوة عليه. تحتاجها فقط على جهاز جديد، مثل اللابتوب.
+</div>
+
+<h3>أ) تثبيت Python (إذا لم يكن مثبّتًا)</h3>
+<div class="step"><div class="num">1</div><div>افتح الموقع الرسمي: <a href="https://www.python.org/downloads/">python.org/downloads</a>، واضغط الزر الأصفر الكبير <strong>Download Python</strong>. أداة <code>1-Setup.bat</code> تفتح لك هذه الصفحة تلقائيًا إذا لم تجد Python.</div></div>
+<div class="step"><div class="num">2</div><div>افتح الملف الذي نزل. في أسفل أول نافذة يوجد مربع صغير مكتوب بجانبه <strong>Add python.exe to PATH</strong>. <strong>ضع علامة ✓ فيه.</strong> هذه أهم خطوة، فبدونها لن تجد الأدوات برنامج Python.</div></div>
+<div class="step"><div class="num">3</div><div>اضغط <strong>Install Now</strong> وانتظر حتى تظهر <strong>Setup was successful</strong>، ثم اضغط <strong>Close</strong>.</div></div>
+
+<h3>ب) تشغيل التجهيز</h3>
+<div class="step"><div class="num">1</div><div>افتح مجلد <code>hdd-organizer</code> واضغط مرتين على <code>1-Setup.bat</code>.</div></div>
+<div class="step"><div class="num">2</div><div>ستظهر نافذة سوداء فيها كتابة. هذا طبيعي، فهي "لوحة التحكم" التي تعمل فيها الأدوات. <strong>لا تغلقها.</strong></div></div>
+<div class="step"><div class="num">3</div><div>ستمرّ بخمس مراحل مرقّمة من <code>[1/5]</code> إلى <code>[5/5]</code>. أطولها المرحلة 3، وهي تنزيل PyTorch (حوالي 3GB). قد تأخذ من 10 دقائق إلى ساعة حسب سرعة الإنترنت.</div></div>
+<div class="step"><div class="num">4</div><div>في النهاية سترى باللون الأخضر: <strong>تم التجهيز بنجاح!</strong> وبجانبها <code>NVIDIA</code> إذا كان لديك كرت شاشة، أو <code>CPU</code> إذا لم يكن. اضغط أي زر في لوحة المفاتيح لإغلاق النافذة.</div></div>
+
+<pre>=== 1-Setup ===
+[1/5] Python 3.13.5
+[2/5] .venv
+[3/5] NVIDIA → PyTorch (~3GB)
+[4/5] requirements.txt
+[5/5] CLIP model (~600MB)
+✓  NVIDIA GeForce GTX 1660 SUPER</pre>
+<p class="muted">هذا شكل مختصر لما ستراه. النافذة الحقيقية مكتوبة بالعربية.</p>
+
+<!-- ============================================================ -->
+<h2 id="organize">6. الخطوة 2: الترتيب ← <code>2-Organize.bat</code></h2>
+<p>اضغط مرتين على <code>2-Organize.bat</code>. ستسألك النافذة ثلاثة أسئلة فقط.</p>
+
+<h3>السؤال الأول: ماذا تريد أن ترتّب؟</h3>
+<p>اكتب <strong>حرف القرص</strong> ثم اضغط <kbd>Enter</kbd>.</p>
+<ul>
+  <li>لترتيب قرص كامل: اكتب <code>E</code>، أو <code>F</code>، أو أي حرف قرص آخر.</li>
+  <li>لترتيب مجلد واحد فقط: اكتب مساره كاملًا، مثل <code>D:\Photos</code>.</li>
+</ul>
+<p><strong>كيف تعرف حرف القرص؟</strong> افتح <em>This PC</em> (هذا الكمبيوتر)، وسترى الأقراص وبجانب كل قرص حرف بين قوسين، مثل <em>Seagate Expansion Drive (E:)</em>.</p>
+<p><strong>طريقة سهلة لمسار مجلد:</strong> افتح المجلد، واضغط على شريط العنوان في الأعلى، وانسخ المسار بـ <kbd>Ctrl</kbd>+<kbd>C</kbd>، ثم الصقه في النافذة السوداء بالزر الأيمن للفأرة.</p>
+<div class="box bad">
+  <strong>ممنوع ترتيب القرص C: أو مجلد المستخدم كاملًا</strong>
+  القرص C: فيه ويندوز والبرامج، وترتيبه يخرّب الجهاز. لذلك ترفض الأدوات ذلك تلقائيًا. لكن يمكنك ترتيب مجلد محدد داخله، مثل <code>C:\Users\mahmo\Downloads</code>.
+</div>
+
+<h3>السؤال الثاني: هل تريد تصنيف الصور حسب محتواها؟</h3>
+<ul>
+  <li>اكتب <code>Y</code> (نعم): تُصنَّف الصور إلى أشخاص وطبيعة وطعام وغيرها. هذا يأخذ وقتًا، حوالي ساعة لكل 100 ألف صورة مع كرت NVIDIA.</li>
+  <li>اكتب <code>N</code> (لا): تُرتَّب الصور حسب السنة فقط، وهذا سريع.</li>
+</ul>
+<p>أثناء التصنيف سترى سطورًا مثل هذا السطر:</p>
+<pre>... 40000/105287  (32 photos/s, ~34 min left)</pre>
+<p>ومعناه: انتهيت من 40 ألف صورة من أصل 105 آلاف، بسرعة 32 صورة في الثانية، وبقي حوالي 34 دقيقة.</p>
+<div class="box info">
+  <strong>إذا توقف التصنيف في المنتصف</strong>
+  مثلًا بسبب انقطاع الكهرباء أو إغلاق النافذة: لا مشكلة. شغّل <code>2-Organize.bat</code> مرة أخرى واختر <code>Y</code>، وسيكمل من حيث توقف دون أن يعيد الصور التي انتهت. التصنيف وحده لا ينقل أي ملف.
+</div>
+
+<h3>المعاينة: انظر قبل أن تقرّر</h3>
+<p>بعد ذلك تظهر جداول تعرض ما <em>سيحدث</em>، دون أن يُنقل أي ملف:</p>
+<pre>Type                  Files SizeGB
+----                  ----- ------
+Videos                17337 1555,3
+Images\People         52919    103
+Images\Nature          2674    8,8
+...
+Total files: 212106  (2222.3 GB)
+App/game/repo folders left untouched: 8</pre>
+<ul>
+  <li><code>Type</code>: المجلد الذي ستذهب إليه الملفات.</li>
+  <li><code>Files</code>: عدد الملفات.</li>
+  <li><code>SizeGB</code>: حجمها بالغيغابايت.</li>
+  <li><code>Year</code> (في الجدول الثاني): السنة.</li>
+  <li><code>App/game/repo folders left untouched</code>: عدد مجلدات البرامج والألعاب التي لن تُلمس (الشرح في القسم التالي).</li>
+</ul>
+
+<h3>السؤال الثالث: هل أبدأ النقل؟</h3>
+<p>إذا أعجبتك الأرقام، اكتب <code>YES</code> <strong>بالأحرف الكبيرة</strong> ثم اضغط <kbd>Enter</kbd>. أي شيء آخر يلغي العملية دون نقل أي ملف.</p>
+<p>أثناء النقل <strong>لا تفصل القرص ولا تطفئ الجهاز</strong>. النقل داخل القرص نفسه سريع، وفي الغالب أقل من ساعة حتى لمئات آلاف الملفات. في النهاية سترى:</p>
+<pre>Moved: 212106   Errors: 0
+Undo log: E:\Organized\_undo\move-log-20261024-075953.csv</pre>
+<p>أي: نُقل 212,106 ملفات دون أي خطأ، وهذا هو اسم سجل التراجع.</p>
+
+<!-- ============================================================ -->
+<h2 id="result">7. كيف ستبدو ملفاتك بعد الترتيب؟</h2>
+<p>ستجد في القرص مجلدًا جديدًا اسمه <code>Organized</code>:</p>
+<pre>E:\Organized\
+├── Videos\        2021\  2022\  2023\ ...
+├── Images\
+│   ├── People\    2021\  2022\ ...
+│   ├── Nature\    2021\  2022\ ...
+│   ├── Food\      ...
+│   └── ...
+├── Audio\         ...
+├── Documents\     ...
+├── Archives\      ...
+├── Programs\      ...
+├── Other\         ...
+├── _labels\       photo-labels.csv
+└── _undo\         move-log-....csv   undo.ps1</pre>
+
+<h3>مجلدات الملفات حسب النوع</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>المجلد</th><th>ماذا فيه</th><th>أمثلة على الامتدادات</th></tr>
+  <tr><td><code>Images</code></td><td>الصور</td><td><code>jpg png heic webp gif</code> وصور الكاميرا الخام <code>cr2 nef arw dng</code></td></tr>
+  <tr><td><code>Videos</code></td><td>الفيديوهات</td><td><code>mp4 mkv avi mov wmv</code></td></tr>
+  <tr><td><code>Audio</code></td><td>الصوتيات والأغاني والتسجيلات</td><td><code>mp3 wav m4a ogg opus</code></td></tr>
+  <tr><td><code>Documents</code></td><td>المستندات</td><td><code>pdf docx xlsx pptx txt</code></td></tr>
+  <tr><td><code>Archives</code></td><td>الملفات المضغوطة</td><td><code>zip rar 7z iso</code></td></tr>
+  <tr><td><code>Programs</code></td><td>ملفات تثبيت البرامج</td><td><code>exe msi apk</code></td></tr>
+  <tr><td><code>Other</code></td><td>كل ما لا يندرج تحت ما سبق</td><td>ملفات الترجمة وملفات البرامج الخاصة وغيرها</td></tr>
+</table>
+</div>
+
+<h3>مجلدات الصور حسب المحتوى (عند اختيار <code>Y</code>)</h3>
+<div class="table-wrap">
+<table>
+  <tr><th>المجلد</th><th>ماذا فيه</th><th>كيف يُعرف</th></tr>
+  <tr><td><code>People</code></td><td>صور فيها أشخاص: سيلفي، صور عائلية، صور جماعية</td><td>نموذج CLIP</td></tr>
+  <tr><td><code>Nature</code></td><td>طبيعة: جبال، بحر، أشجار، زهور، غروب</td><td>نموذج CLIP</td></tr>
+  <tr><td><code>Animals</code></td><td>حيوانات</td><td>نموذج CLIP</td></tr>
+  <tr><td><code>Food</code></td><td>طعام وشراب</td><td>نموذج CLIP</td></tr>
+  <tr><td><code>City-Buildings</code></td><td>مبانٍ، شوارع، مساجد، داخل البيوت، سيارات</td><td>نموذج CLIP</td></tr>
+  <tr><td><code>Documents</code></td><td>صور أوراق ومستندات وفواتير وبطاقات</td><td>نموذج CLIP</td></tr>
+  <tr><td><code>Graphics</code></td><td>تصاميم، ملصقات، صور مضحكة (ميمز)، رسومات، خلفيات</td><td>نموذج CLIP</td></tr>
+  <tr><td><code>Screenshots</code></td><td>لقطات الشاشة</td><td>اسم الملف (مثل <code>Screenshot</code>) أو نموذج CLIP</td></tr>
+  <tr><td><code>Edited</code></td><td>صور معدّلة ببرامج مثل Photoshop وLightroom وSnapseed وPicsArt وCanva وغيرها، وملفات <code>psd</code></td><td>المعلومات التقنية داخل الصورة (EXIF)، حيث يكتب برنامج التعديل اسمه</td></tr>
+  <tr><td><code>Camera-RAW</code></td><td>صور الكاميرا الاحترافية الخام</td><td>الامتداد</td></tr>
+  <tr><td><code>Small-Icons</code></td><td>صور صغيرة جدًا (أصغر من 200 بكسل): أيقونات ومصغّرات</td><td>المقاس</td></tr>
+  <tr><td><code>Uncertain</code></td><td>صور لم يكن النموذج متأكدًا منها (ثقته أقل من 40%)</td><td>نموذج CLIP</td></tr>
+  <tr><td><code>Unreadable</code></td><td>ملفات اسمها يوحي بأنها صور لكنها ليست صورًا فعلًا، وغالبًا ملفات مؤقتة لتطبيقات</td><td>تعذّر فتحها</td></tr>
+</table>
+</div>
+
+<h3>من أين تأتي السنة؟</h3>
+<p>من <strong>تاريخ آخر تعديل</strong> للملف، وهو الذي تراه في Explorer تحت <em>Date modified</em>. إذا كان هذا التاريخ غير منطقي (مثل 1970 أو 1899، ويحدث هذا عندما يضيع التاريخ أثناء النسخ)، يوضع الملف في مجلد <code>Unknown-Year</code>.</p>
+
+<h3>ما الذي لا يُنقل أبدًا؟</h3>
+<ul>
+  <li><strong>مجلدات البرامج والألعاب:</strong> أي مجلد فيه ملفات <code>.dll</code> يبقى كما هو بكامل ما فيه، لأن تفكيكه يجعل البرنامج أو اللعبة لا تعمل.</li>
+  <li><strong>مشاريع البرمجة:</strong> المجلدات التي فيها <code>.git</code>.</li>
+  <li><strong>مجلدات النظام:</strong> سلة المحذوفات <code>$RECYCLE.BIN</code> و <code>System Volume Information</code>.</li>
+  <li><strong>ملفات النظام الصغيرة:</strong> مثل <code>desktop.ini</code> و <code>Thumbs.db</code>.</li>
+  <li><strong>المجلدات التي يمنع ويندوز قراءتها.</strong></li>
+  <li><strong>مجلد <code>Organized</code> نفسه:</strong> لذلك يمكنك تشغيل الترتيب مرة ثانية على القرص نفسه لاحقًا، فتُرتَّب الملفات الجديدة فقط.</li>
+</ul>
+
+<div class="box warn">
+  <strong>شيء مهم يجب أن تعرفه</strong>
+  الترتيب الجديد يجمع الملفات حسب <em>النوع والسنة</em>. لذلك إذا كان لديك مجلد اسمه مثلًا <em>"رحلة تركيا"</em>، فلن يبقى مجموعًا معًا: صوره ستذهب إلى <code>Images\...</code> وفيديوهاته إلى <code>Videos\...</code>. إذا كان هذا يزعجك فاستعمل التراجع. أو رتّب فقط المجلدات المبعثرة (مثل <code>Downloads</code>) بدل القرص كله.
+</div>
+
+<!-- ============================================================ -->
+<h2 id="undo">8. الخطوة 3: التراجع ← <code>3-Undo.bat</code></h2>
+<p>إذا لم يعجبك الترتيب، يعيد التراجع <strong>كل ملف إلى مكانه القديم بالضبط</strong>، ويعيد إنشاء المجلدات القديمة إذا كانت قد حُذفت.</p>
+<div class="step"><div class="num">1</div><div>اضغط مرتين على <code>3-Undo.bat</code>.</div></div>
+<div class="step"><div class="num">2</div><div>اكتب حرف القرص الذي رتّبته، مثل <code>E</code>، ثم اضغط <kbd>Enter</kbd>.</div></div>
+<div class="step"><div class="num">3</div><div>ستظهر قائمة بسجلات الترتيب مرقّمة، والأحدث أولًا. اضغط <kbd>Enter</kbd> لاختيار الأحدث، أو اكتب رقم سجل آخر.</div></div>
+<div class="step"><div class="num">4</div><div>اكتب <code>YES</code> ثم اضغط <kbd>Enter</kbd>. في النهاية سترى: <code>Restored: ...</code> وهو عدد الملفات التي عادت إلى أماكنها.</div></div>
+<div class="box info">
+  <strong>أسئلة شائعة عن التراجع</strong>
+  <ul>
+    <li><strong>هل يمكن تشغيله مرتين؟</strong> نعم، دون ضرر. الملفات التي عادت سابقًا يتخطاها.</li>
+    <li><strong>ماذا لو نقلت أو حذفت بعض الملفات بنفسي بعد الترتيب؟</strong> يتخطاها التراجع بأمان ويعيد الباقي.</li>
+    <li><strong>ماذا لو رتّبت أكثر من مرة؟</strong> كل ترتيب له سجل خاص به. تراجع عن الأحدث أولًا، ثم الأقدم.</li>
+    <li><strong>هل يمكن التراجع من جهاز آخر؟</strong> نعم. نسخة من أداة التراجع <code>undo.ps1</code> محفوظة على القرص نفسه في <code>Organized\_undo\</code>.</li>
+  </ul>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="clean">9. الخطوة 4 (اختيارية): حذف المجلدات الفارغة ← <code>4-Clean-Empty-Folders.bat</code></h2>
+<p>بعد الترتيب تبقى المجلدات القديمة في مكانها لكنها أصبحت فارغة. هذه الأداة تنظّفها.</p>
+<div class="step"><div class="num">1</div><div>اضغط مرتين على <code>4-Clean-Empty-Folders.bat</code>.</div></div>
+<div class="step"><div class="num">2</div><div>اكتب حرف القرص ثم اضغط <kbd>Enter</kbd>. ستخبرك الأداة كم مجلدًا فارغًا وجدت.</div></div>
+<div class="step"><div class="num">3</div><div>اكتب <code>YES</code> للحذف، أو أي شيء آخر للإلغاء.</div></div>
+<div class="box ok">
+  <strong>لماذا هي آمنة؟</strong>
+  تحذف فقط المجلد الذي <strong>لا يوجد بداخله أي ملف إطلاقًا</strong>، حتى في المجلدات التي بداخله. إذا كان فيه ملف واحد، حتى <code>desktop.ini</code>، يبقى كما هو. ولا تلمس مجلد <code>Organized</code> ولا مجلدات النظام. وإذا تراجعت لاحقًا، يعيد التراجع إنشاء المجلدات التي يحتاجها.
+</div>
+
+<!-- ============================================================ -->
+<h2 id="rules">10. القواعد الذهبية</h2>
+<ol>
+  <li><strong>لا تفصل القرص ولا تطفئ الجهاز</strong> أثناء النقل أو التراجع.</li>
+  <li><strong>لا تجعل الجهاز ينام</strong> أثناء العمل الطويل. يمكنك ضبط ذلك من <em>Settings ← System ← Power</em>.</li>
+  <li><strong>لا تفتح ولا تعدّل ملفات القرص</strong> أثناء النقل.</li>
+  <li><strong>لا تحذف مجلد <code>Organized\_undo</code></strong>، فهو دفتر التراجع.</li>
+  <li><strong>لا تنقل مجلد <code>hdd-organizer</code></strong> إلى مكان آخر على الجهاز نفسه. إذا نقلته، شغّل <code>1-Setup.bat</code> مرة أخرى لإصلاحه.</li>
+  <li><strong>لا تحذف</strong> المجلد <code>C:\Users\&lt;اسمك&gt;\.cache\huggingface</code>، ففيه نموذج الصور. إذا حذفته، شغّل <code>1-Setup.bat</code> لتنزيله مرة أخرى.</li>
+  <li><strong>جرّب أولًا على مجلد صغير</strong> إذا كان قرصًا جديدًا، مثل مجلد فيه 100 ملف، لترى النتيجة قبل ترتيب القرص كله.</li>
+  <li><strong>إذا كانت الملفات مهمة جدًا وليس لها نسخة أخرى،</strong> فمن الحكمة أن يكون لديك نسخة احتياطية قبل أي ترتيب كبير. ليس لأن الأدوات تحذف شيئًا، بل لأن الأقراص نفسها قد تتعطل يومًا ما.</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="faq">11. مشاكل وحلول</h2>
+<div class="table-wrap">
+<table>
+  <tr><th>المشكلة</th><th>الحل</th></tr>
+  <tr><td>النافذة السوداء تُغلق فورًا</td><td>هذا لا يحدث عادةً، لأن الأدوات تنتظر ضغطة زر في النهاية. إذا حدث، تأكد أنك تشغّل الملف من داخل مجلد <code>hdd-organizer</code> وأن مجلد <code>tools</code> موجود بجانبه.</td></tr>
+  <tr><td>رسالة: <em>لم أجد برنامج Python</em></td><td>ثبّت Python كما في الخطوة 1، وتأكد من علامة ✓ عند <strong>Add python.exe to PATH</strong>. ثم أعد تشغيل الجهاز وشغّل <code>1-Setup.bat</code>.</td></tr>
+  <tr><td>رسالة: <em>الجهاز غير مجهّز بعد</em></td><td>شغّل <code>1-Setup.bat</code> أولًا.</td></tr>
+  <tr><td>نافذة زرقاء: <em>Windows protected your PC</em></td><td>تظهر أحيانًا إذا نُسخ المجلد من الإنترنت أو من جهاز آخر. اضغط <strong>More info</strong> ثم <strong>Run anyway</strong>، لكن فقط إذا كان هذا مجلدك أنت.</td></tr>
+  <tr><td>فشل التنزيل في <code>1-Setup.bat</code></td><td>تأكد من الإنترنت وشغّله مرة أخرى. سيكمل ما بقي.</td></tr>
+  <tr><td>التصنيف بطيء جدًا</td><td>إذا ظهر <code>CPU</code> في نهاية التجهيز فلا يوجد كرت NVIDIA، والبطء طبيعي. والأقراص الخارجية القديمة (USB 2) بطيئة أيضًا. اتركه يعمل، فهو يكمل وحده.</td></tr>
+  <tr><td>بعض الصور في المجلد الخطأ</td><td>النموذج ذكي لكنه ليس مثاليًا. انقل هذه الصور بيدك إلى المجلد الصحيح. التراجع يتخطى الملفات التي نقلتها بنفسك بأمان.</td></tr>
+  <tr><td>رقم <code>Errors</code> ليس صفرًا</td><td>بعض الملفات لم تُنقل، غالبًا لأنها كانت مفتوحة أو محمية، وبقيت في مكانها القديم سليمة. التفاصيل في ملف <code>errors-....txt</code> داخل <code>Organized\_undo\</code>.</td></tr>
+  <tr><td>رسالة رفض: <em>فيه ويندوز أو مجلد المستخدم</em></td><td>هذه حماية مقصودة. اختر قرص بيانات أو مجلدًا محددًا.</td></tr>
+  <tr><td>أريد ترتيب ملفات جديدة على قرص رتّبته سابقًا</td><td>شغّل <code>2-Organize.bat</code> مرة أخرى. الملفات داخل <code>Organized</code> لن تُلمس، والجديدة فقط تُرتّب معها. وسيُنشأ سجل تراجع جديد لهذه المرة.</td></tr>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="other-pc">12. استعمال الأدوات على جهاز آخر (مثل اللابتوب)</h2>
+<div class="step"><div class="num">1</div><div>انسخ مجلد <code>hdd-organizer</code> كاملًا إلى الجهاز الآخر، بفلاشة أو بأي طريقة أخرى.</div></div>
+<div class="step"><div class="num">2</div><div>ثبّت Python على ذلك الجهاز كما في <a href="#setup">الخطوة 1</a>.</div></div>
+<div class="step"><div class="num">3</div><div>شغّل <code>1-Setup.bat</code>. سيكتشف أن البيئة <code>.venv</code> المنسوخة لا تعمل هناك، فيعيد إنشاءها تلقائيًا وينزّل كل ما يلزم. يحتاج إنترنت.</div></div>
+<div class="step"><div class="num">4</div><div>استعمل <code>2-Organize.bat</code> كالمعتاد.</div></div>
+<p class="muted">لنقل أسرع: احذف المجلد المخفي <code>.venv</code> من النسخة قبل نسخها، فهو كبير (حوالي 5GB) وسيُعاد إنشاؤه هناك على أي حال.</p>
+
+<!-- ============================================================ -->
+<h2 id="manual">13. الطريقة اليدوية بالأوامر (للمتقدمين)</h2>
+<p>الملفات المرقّمة تفعل كل هذا عنك، لكن إذا أردت التحكم الكامل افتح <strong>PowerShell</strong>، واستبدل <code>F:\</code> بالقرص الذي تريده.</p>
+<p>1) ادخل إلى مجلد الأدوات:</p>
+<pre>cd "C:\Users\mahmo\Desktop\cloudes work\hdd-organizer"</pre>
+<p>2) صنّف الصور (لا ينقل شيئًا):</p>
+<pre>.\.venv\Scripts\python.exe tools\classify.py --root F:\</pre>
+<p>تجربة على أول 300 صورة فقط:</p>
+<pre>.\.venv\Scripts\python.exe tools\classify.py --root F:\ --limit 300</pre>
+<p>3) معاينة (أرقام فقط):</p>
+<pre>powershell -ExecutionPolicy Bypass -File tools\organize.ps1 -Drive F:\ -Mode Preview -Labels "F:\Organized\_labels\photo-labels.csv"</pre>
+<p>4) النقل الفعلي:</p>
+<pre>powershell -ExecutionPolicy Bypass -File tools\organize.ps1 -Drive F:\ -Mode Move -Labels "F:\Organized\_labels\photo-labels.csv"</pre>
+<p>5) التراجع (ضع اسم السجل الصحيح):</p>
+<pre>powershell -ExecutionPolicy Bypass -File tools\undo.ps1 -Log "F:\Organized\_undo\move-log-YYYYMMDD-HHMMSS.csv"</pre>
+<p class="muted">للترتيب حسب النوع والسنة فقط دون تصنيف الصور: تخطَّ الأمر رقم 2، واحذف الجزء <code>-Labels "..."</code> من الأمرين 3 و4.</p>
+
+<!-- ============================================================ -->
+<h2 id="e-drive">14. ما تمّ على قرصك E: (Seagate، 5 تيرا)</h2>
+<div class="box ok">
+  <strong>رُتّب بنجاح بتاريخ 24 أكتوبر 2026</strong>
+  <ul>
+    <li><strong>نُقل:</strong> 212,106 ملفات (2.2 تيرابايت)، دون أي خطأ ودون حذف أي ملف.</li>
+    <li><strong>صُنّفت:</strong> حوالي 114,000 صورة على كرت الشاشة GTX 1660 SUPER في حوالي ساعة.</li>
+    <li><strong>بقي مكانه:</strong> 8 مجلدات برامج وألعاب، و3 مجلدات منع ويندوز قراءتها.</li>
+    <li><strong>سجل التراجع:</strong> <code>E:\Organized\_undo\move-log-20261024-075953.csv</code></li>
+    <li><strong>المجلدات القديمة الفارغة:</strong> ما زالت موجودة. يمكنك حذفها بـ <code>4-Clean-Empty-Folders.bat</code> إذا أردت.</li>
+  </ul>
+</div>
+<p><strong>للتراجع عن ترتيب القرص E:</strong> شغّل <code>3-Undo.bat</code>، واكتب <code>E</code>، ثم اضغط <kbd>Enter</kbd> ثم اكتب <code>YES</code>.</p>
+
+<!-- ============================================================ -->
+<h2 id="words">15. قاموس الكلمات</h2>
+<div class="table-wrap">
+<table>
+  <tr><th>الكلمة</th><th>معناها ببساطة</th></tr>
+  <tr><td>القرص (الهارد ديسك)</td><td>المكان الذي تُحفظ فيه الملفات. لكل قرص حرف، مثل <code>C:</code> و <code>E:</code>.</td></tr>
+  <tr><td>المجلد</td><td>صندوق داخل القرص تضع فيه الملفات.</td></tr>
+  <tr><td>المسار</td><td>عنوان الملف أو المجلد، مثل عنوان البيت: <code>E:\Organized\Images</code>.</td></tr>
+  <tr><td>الامتداد</td><td>الحروف بعد النقطة في اسم الملف، وتدل على نوعه: <code>.jpg</code> صورة، و<code>.mp4</code> فيديو.</td></tr>
+  <tr><td>السكربت</td><td>ورقة تعليمات يقرؤها الكمبيوتر وينفّذها خطوة بخطوة.</td></tr>
+  <tr><td>ملف <code>.bat</code></td><td>زر تشغيل. تضغطه مرتين فيشغّل السكربت المناسب.</td></tr>
+  <tr><td>Python</td><td>لغة برمجة مجانية، يعمل بها سكربت تصنيف الصور.</td></tr>
+  <tr><td>PowerShell</td><td>لغة أوامر موجودة في ويندوز، تعمل بها سكربتات النقل والتراجع.</td></tr>
+  <tr><td>المكتبة</td><td>مجموعة أدوات جاهزة يستعملها السكربت، حتى لا يبنيها من الصفر.</td></tr>
+  <tr><td>PyTorch</td><td>المحرك الذي يشغّل نموذج الذكاء الاصطناعي، على كرت الشاشة أو على المعالج.</td></tr>
+  <tr><td>النموذج (CLIP)</td><td>"عقل" صغير تدرّب على ملايين الصور، فأصبح يعرف ما في الصورة: أشخاص، طبيعة، طعام... يعيش في ملف على جهازك.</td></tr>
+  <tr><td>كرت الشاشة (GPU)</td><td>قطعة في الكمبيوتر سريعة جدًا في الحسابات، فتجعل تصنيف الصور أسرع بكثير.</td></tr>
+  <tr><td>EXIF</td><td>معلومات مخفية داخل الصورة، مثل نوع الكاميرا والتاريخ واسم برنامج التعديل. ليست الصورة نفسها.</td></tr>
+  <tr><td>المعاينة (Preview)</td><td>"تمثيل" للترتيب: يعدّ الملفات ويخبرك بما سيحدث، دون أن ينقل شيئًا.</td></tr>
+  <tr><td>سجل التراجع (Undo log)</td><td>دفتر يُكتب فيه المكان القديم والجديد لكل ملف، لتستطيع إعادة كل شيء كما كان.</td></tr>
+  <tr><td><code>.venv</code></td><td>صندوق خاص فيه Python والمكتبات التي تحتاجها هذه الأدوات فقط، حتى لا تختلط ببرامج الجهاز الأخرى.</td></tr>
+</table>
+</div>
+
+</main>
+<script>
+  function toggleTheme() {
+    var root = document.documentElement;
+    var dark = root.dataset.theme ? root.dataset.theme === 'dark'
+      : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark';
+    try { localStorage.setItem('guide-theme', root.dataset.theme); } catch (e) {}
+  }
+  try { var t = localStorage.getItem('guide-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+</body>
+</html>
